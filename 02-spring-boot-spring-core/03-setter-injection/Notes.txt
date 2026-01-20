@@ -1,0 +1,4 @@
+Setter injections create setter methods in the class for injections. Configuration of the dependency injection will use the @Autowired Annotation.
+Injection Types (Which one to use?)
+1. Construction Injection: Used when you have required/specified dependencies(Generally recommended by the spring.io development team as first choice)
+2. Setter Injection: Used when you have optional dependencies (If no dependency provided, the app provides reasonable default logic)

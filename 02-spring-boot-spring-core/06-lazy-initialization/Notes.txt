@@ -1,0 +1,7 @@
+Lazy initialization is used when you dont want to create all beans up front. A bean will only be initialized in the following cases:
+1. It is needed for dependency injection
+2. or it is explicitly requested
+Adding the @Lazy Annotation to a given class will apply these rules.
+To apply the Lazy initialization globally across all classes you must go into the application.properties file: spring.main.lazy-initialization=true (No beans created until they're explicitly needed)
+Advantages: Creates objects as needed, May help with faster startup time if you have large number of components
+Disadvantages: Web related components like @RestController will not be created until requested, Configuration issues may not be found until its too late, Must have enough memory for creation of beans

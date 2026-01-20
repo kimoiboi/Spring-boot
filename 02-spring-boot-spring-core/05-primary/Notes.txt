@@ -1,0 +1,5 @@
+The @Primary Annotation simply asks for a bean(doesn't matter which bean it needs ONLY 1 Primary bean in order to always be used).
+
+@Primary vs @Qualifier
+1. @Primary leaves it up to the implementation class to have only 1 primary "coach"(in the case of what our code is talking about). Cannot have more than 1 @Primary classes
+2. @Qualifier allows you to be very specific on which bean you would like to use. (The @Qualifier Annotation contains higher priority than @Primary Annotation).

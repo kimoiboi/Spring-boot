@@ -1,0 +1,10 @@
+Development Process:
+1. Create a java class and use the @Configuration annotation
+2. Define @Bean method to configure the bean
+3. Inject the bean into our controller
+Use Case for @Bean:
+1. Make an existing third-party class available to the Spring Framework
+2. You may not have access to the source code of the third-party class so you will make use of the third-party class as a Spring Bean
+Real-World Project Example:
+The AWS S3 client code is part of the AWS SDK(we can't modify the AWS SDK source code, so we can't simply add the @Component annotation to use as a bean), however we can 
+configure it as a Spring Bean by using @Bean allowing us to use the Amazon S3 Client in our Spring Application which can inject it into other services of our application.

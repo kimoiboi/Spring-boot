@@ -1,13 +1,22 @@
 package com.luv2code.springboot.cruddemo.rest;
 
-import tools.jackson.databind.json.JsonMapper;
-import com.luv2code.springboot.cruddemo.entity.Employee;
-import com.luv2code.springboot.cruddemo.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.luv2code.springboot.cruddemo.entity.Employee;
+import com.luv2code.springboot.cruddemo.service.EmployeeService;
+
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 @RequestMapping("/api")
@@ -71,8 +80,7 @@ public class EmployeeRestController {
     // add mapping for PATCH /employees/{employeeId} - patch employee ... partial update
 
     @PatchMapping("/employees/{employeeId}")
-    public Employee patchEmployee(@PathVariable int employeeId,
-                                  @RequestBody Map<String, Object> patchPayload) {
+    public Employee patchEmployee(@PathVariable int employeeId, @RequestBody Map<String, Object> patchPayload) {
 
         // Step 1: Retrieve the existing employee from database
         Employee tempEmployee = employeeService.findById(employeeId);
@@ -84,9 +92,7 @@ public class EmployeeRestController {
         // Step 2: Security check - prevent ID modifications
         // The ID should never change, so reject any attempts to modify it
         if (patchPayload.containsKey("id")) {
-            throw new RuntimeException(
-                "Employee id cannot be modified. Remove 'id' from request body."
-            );
+            throw new RuntimeException("Employee id cannot be modified. Remove 'id' from request body.");
         }
 
         // Step 3: Apply the partial update

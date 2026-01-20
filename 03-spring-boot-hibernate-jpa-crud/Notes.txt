@@ -1,0 +1,136 @@
+What is Hibernate?
+A framework for persisting/saving java objects in a database (www.hibernate.org/orm). Your Java App -> Hibernate -> Database -> Hibernate -> Your Java App
+Benefits of Hibernate:
+1. Handles all of low-level SQL
+2. Minimizes the amount of JDBC you have to develop
+3. Hibernate provides the Object-to-Relational Mapping (ORM helps the developer define the mapping between the java class and database table)
+What is JPA?
+Jakarta Persistence API(JPA) is the standard API for ORM which contains only a specification(Like JPA SPec- Defines a set of interfaces & Requires an implementation to be usable)
+JPA Vendor Implementations: Hibernate, EclipseLink, DataNucleus, OpenJPA (Hibernate is most popular/default implementation of JPA)
+Benefits of JPA:
+1. By having a standard API, you are not locked to a vendor's implementation
+2. Maintain portable, flexible code by coding to JPA spec(interfaces)
+3. Can theoretically switch between vendor implementations(For example, if vendor ABC stops supporting their product — you can switch to vendor XYZ without vendor lock in)
+JPA/Hibernate CRUD Apps: Create objects, Read objects, Update objects, Delete objects
+Hibernate/JPA uses JDBC for all database communications
+EntityManager is the main component for creating queries, etc.
+EntityManager is from Jakarta Persistence API (JPA)
+Based on configs, Spring Boot will automatically create the beans(ex: DataSource, EntityManager...)! You can then inject these into your app, for example your DAO
+JPA Development Process:
+1. Annotate Java Class
+2. Develop Java Code to Perform Database Operations
+Terminology:
+Entity Class - Java class that is mapped to a database table (Must be annotated with @Entity, Must have a public or protected no-argument constructor — Can have other constructors)
+Primary Key - Uniquely identifies each row in a table(Must be a unique value, Cannot contain NULL values)
+Java Annotations Steps:
+1. Map class to database table
+2. Map fields to database columns
+ID Generation Strategies:
+GenerationType.AUTO - Pick an appropriate strategy for the particular database
+GenerationType.IDENTITY - Assign primary keys using database identity column <-- In general this is the most common and recommended
+GenerationType.SEQUENCE - Assign primary keys using a database sequence
+GenerationType.TABLE - Assign primary keys using an underlying database table to ensure uniqueness
+GenerationType.UUID - Assign primary keys using a globally unique identifier (UUID) to ensure uniqueness
+Extra Bonus: You can define your own CUSTOM generation strategy - 1.Create implementation of org.hibernate.id.IdentifierGenerator, 2. Override the method public Serializable generate(...)
+CRUD - Create Object Information below
+Student Data Access Object (DAO) is responsible for interfacing with the database, serves as a helper class to communicate with the database.
+Student DAO can contain methods like save(), findById(), findAll(), findByLastName(), update(), delete(), deleteAll(), etc.
+Our DAO needs a JPA entity manager. JPA enitity manager is the main componenet for saving/retrieving entities.
+The JPA entity manager needs a Data Source(A data source defines database connection info). JPA entity manager and Data Source are automatically created by Spring Boot(Based on the application.properties file — ex: JDBC URL, user id, password, etc.)
+We can then autowirte/inject the JPA Entity Manager into our Student DAO
+We will use JPARepository later(it is very similar to Entity Manager), but let me explain when to use which and you must know how to use both:
+1. If you need low-level control & flexibility, use Entity Manager.
+2. If you are looking for high-level abstraction, use JPARepository.
+Use Case of Entity Manager:
+- Need low-level control over the database operations and want to write custom queries
+- Provides low-level access to JPA and work directly with JPA entities
+- Complex queries that require advanced features such as native SQL queries or stored procedure calls
+- When you have custom requirements that are not easily handled by higher-level abstractions
+Use Case of JPARepository:
+- Provides commonly used CRUD operations out of the box reducing the amount of code you need to write
+- Additional features such as pagination, sorting
+- Generates queries based on method names
+- Can also create custom queries using @Query annotation
+Development Process for Student DAO "Creating":
+1. Define DAO interface
+2. Define DAO implementation(Inject the Entity Manager at this step)
+3. Update main app
+Additional Bonus & Specialized annotation for DAOs:
+Spring provides a @Transactional annotation. This annotation automatically begins and ends a transaction for your JPA code(No need to explicitly do this in the java code).
+Spring provides the @Repository annotation(Can be considered as a "sub-annotation" of @Component). Spring will automatically register the DAO implementation(thanks to component-scanning) & will also provided translation of any JDBC related exceptions.
+CRUD - Read Object Information below
+Development Process for Student DAO "Reading/Retrieving":
+1. Add new method to DAO interface
+2. Add new method to DAO implementation
+3. Update main app
+Now we are going to move onto how to Query multiple objects:
+- JPA Query Language(JPQL) is a query language for retrieving objects.
+- Similar in concept to SQL (ex: WHERE, LIKE, ORDER BY, JOIN, IN, etc.). However, JPQL is based on the entity name & entity fields (Rather than using table names/table columns).
+- Note: Remember all JPQL syntax is based on entity name & entity fields
+Ex: 1. TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student WHERE lastName ='Doe'", Student.class);  (lastName is considered the Field of JPA entity)
+       List<Student> students = theQuery.getResultList();
+    2. TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student WHERE lastName='Doe' OR firstName='Daffy'", Student.class); ("FROM Student" where Student is the class name)
+       List<Student> students = theQuery.getResultList();
+    3. TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student WHERE email LIKE '%luv2code.com'", Student.class);
+       List<Student> students = theQuery.getResultList();
+JPQL - Named Parameters example (prefixed with a colon :):
+public List<Student> findByLastName (String theLastName) {
+	TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student WHERE lastName=:theData", Student.class);
+	theQuery.setParameter("theData", theLastName);
+	return theQuery.getResultList();
+}
+JPQL - Select Clause:
+- The query examples so far did not specify a "select" clause 
+- The Hibernate implementation is lenient and allows Hibernate Query Language(HQL)
+- For strict JPQL, the "select" clause is required: TypedQuery<Student> theQuery = entityManager.createQuery("select s FROM Student s WHERE s.email LIKE '%luv2code.com'", Student.class); (s is an "identification variable" / alias which provides a reference to the Student entity object, s - Can be any name which is useful for when you have complex queries)
+Development Process for Student DAO "Reading/Retrieving" multiple objects:
+1. Add new method to DAO interface
+2. Add new method to DAO implementation
+3. Update main app
+CRUD - Update Object Information below
+To perform an update on a SINGLE student you must do the following:
+Student theStudent = entityManager.find(Student.class, 1);
+
+// Change first name to Scooby
+theStudent.setFirstName("Scooby"); 
+
+entityManager.merge(theStudent);
+
+To perform an update on MULTIPLE student objects you must do the following:
+int numRowsUpdated = entityManager.createQuery("UPDATE Student SET lastName='Tester'").executeUpdate();
+Development Process for Student DAO "Updating":
+1. Add new method to DAO interface
+2. Add new method to DAO implementation
+3. Update main app
+CRUD - Delete Object Information below
+To perform a deletion on a SINGLE student you must do the following:
+int id = 1;
+Student theStudent = entityManager.find(Student.class, id);
+
+// Delete the student
+entityManager.remove(theStudent);
+
+To perform a deletion on MULTIPLE student objects you must do the following:
+int numRowsDeleted = entityManager.createQuery("DELETE FROM Student WHERE lastName='Smith'").executeUpdate();
+
+To perform a deletion on ALL student objects you must do the following:
+int numRowsDeleted = entityManager.createQuery("DELETE FROM Student").executeUpdate();
+Development Process for Student DAO "Deleting":
+1. Add new method to DAO interface
+2. Add new method to DAO implementation
+3. Update main app
+
+After Learning ALL of CRUD(Create, Read, Update, Delete) we will move onto how to Create Database Tables from Java code
+- JPA/Hibernate provides an option to automatically create database tables
+- The tables are created based on Java code written with JPA/Hibernate annotations (Very useful for development and testing)
+To make use of it, you would need to edit the Spring Boot configuration file (application.properties) to contain: spring.jpa.hibernate.ddl-auto=create
+- When you run your app, JPA/Hibernate will drop tables then create them (Which again are all based on your JPA/Hibernate annotations present in java code)
+Different configuration property values to use (spring.jpa.hibernate.ddl-auto=PROPERTY VALUE)
+none - No action will be performed
+create - Database tables are dropped meaning you lose all data followed by the database tables creation (as shown above ex: spring.jpa.hibernate.ddl-auto=create)
+create-drop - Database tables are dropped meaning you lose all data followed by the database tables creation. On app shutdown, drop the database tables
+validate - Used to validate the database tables schema
+update - Update the database tables schema
+
+Table Generation (which is what we are talking about currently is useful for small/basic projects. 
+You want to use SQL scripts when you want to do real-world/real time use of SQL databases 

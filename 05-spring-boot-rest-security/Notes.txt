@@ -1,0 +1,139 @@
+Spring Boot REST API Security
+You will learn how to:
+- Secure Spring Boot REST APIs
+- Define users and roles
+- Protect URLS based on a given role
+- Store users, passwords, and roles in Database using plain text as well as an encrypted format
+- Will not cover everything from A -> Z, you can find more information at the Spring Secruity Reference Manual: http://www.luv2code.com/spring-security-reference-manual
+
+Spring Security Model
+- Spring Security defines a framework for security
+- Implemented using Servlet filters in the background
+- Two methods of securing an app: declarative and programmatic
+
+Spring Security with Servlet Filters
+- Servlet Filters are used to pre-process/post-process web requests
+- Servlet Filters can route web requests based on security logic
+- Spring provides a bulk of security functionality with servlet filters
+
+Spring Security Architecture
+            --------------------------------------------------------------------------------------------------------->	
+Web Browser  Spring Security Filters <---> App security configuration <---> Users, Passwords, & roles to make decision    Protected Web Resource (/mytopsecretstuff)
+            <---------------------------------------------------------------------------------------------------------
+
+Security Concepts
+- Authentication: Checks user id and password with credentials stored in the app/database
+- Authorization: Chek to see if user has an authorized role
+
+Declarative Security vs Programmatic Security
+Declarative Security
+- Define application's security constraints in configuration (Handled by all java config: @Configuration)
+- Provides seperation of concerns between application code and security
+
+Programmatic Security
+- Spring Security provides an API for custom application coding
+- Provides greater customization for specific app requirements
+
+Enabling Spring Security
+1. Edit pom.xml file and add spring-boot-starter-security
+2. It will automatically secure all endpoints for application
+
+Secured Endpoints
+- Now when you access your application, Spring Security will prompt for login
+
+Spring Security Configuration
+- You can override default user name and generated password
+	Ex: spring.security.user.name=scott
+	    spring.security.user.password=tiger
+
+Authenitcation and Authorization
+Both of these have support for different techniques to define users, passwords, & roles:
+- In-memory authentication <--- We will cover this 
+- JDBC (To define users, passwords, and roles in a Database) <--- We will cover this
+- LDAP
+- Custom/Pluggable (Able to use your own custom authentication & authorization coding
+
+Spring Boot REST API Security - Configuring Basic Security
+Our Users
+1. User ID: john, password: test123, Roles: EMPLOYEE
+2. User ID: mary, password: test123, Roles: EMPLOYEE, MANAGER
+3. User ID: susan, password: test123, Roles: EMPLOYEE, MANAGER, ADMIN
+
+Configuring Basic Security - Development Process
+1. Create Spring Security Configuration (Using the @Configuration class)
+2. Add users, passwords, & roles
+
+Spring Security Password Storage
+- In Spring Security, passwords are stored using a specific format: {id}encodedPassword
+ID
+noop - Plain text passwords (No encryption, No hashing, nothing)
+bcrypt - BCrypt password hashing (Uses one-way hashing or one-way encryption by taking the password, hashing it using a given BCrypt algorithm, then stored in that fashion)
+
+Password Example:
+Encoding ID
+   |
+   v
+{noop}test123 <-- The password
+   ^
+   |
+Tells Spring Security to store passwords as plain text(noop)
+
+Spring Boot REST API Security - Restricting Access Based on Roles
+For Our Example to implement in Spring Security:
+HTTP Method |        Endpoint	          |     CRUD Action	 |   Role   |
+GET	    | /api/employees		  | Read All Employees   | EMPLOYEE |
+GET	    | /api/employees/{employeeId} | Read Single Employee | EMPLOYEE |
+POST	    | /api/employees		  | Create an Employee   | MANAGER  |
+PUT	    | /api/employees		  | Update an Employee   | MANAGER  |
+DELETE	    | /api/employees/{employeeId} | Delete an Employee   | ADMIN    |
+
+Restricting Access to Roles
+- Lets look at the general syntax to restricting access:
+1. requestMatchers(<< add HTTP METHOD like GET, POST, PUT, DELETE >>, << add path like "/api/employees" >>).hasRole(<< pass a single role to authorize like "EMPLOYEE" >>)
+2. requestMatchers(<< add HTTP METHOD like GET, POST, PUT, DELETE >>, << add path like "/api/employees" >>).hasAnyRole(<< pass list of roles to authorize like "EMPLOYEE", "MANAGER" >>)
+
+Cross-Site Request Forgery (CSRF)
+- Spring Security can protect against CSRF attacks
+- It basically embeds additional authentication data/token into all HTML forms and during follow-on requests the web app verifies the token before processing
+- This serves as the primary use case in traditional web applications(Web pages, HTML forms, Submitting data, etc...)
+
+When to use CSRF Protection?
+- The Spring Security team recommends to use CSRF protection for any normal browser web requests (Traditional web apps with HTML forms to add/modify data)
+- If you are building a REST API for non-browser clients, you may want to disable CSRF protection (Like stateless REST APIs that use POST, PUT, DELETE, and/or PATCH)
+
+403 ERROR - When using HTTP PUT method with Spring Data REST you might run into an issue since we use {employeeId} in our URL
+Replace
+.requestMatchers(HttpMethod.PUT, "/api/employees").hasRole("MANAGER")
+With
+.requestMatchers(HttpMethod.PUT, "/api/employees/**").hasRole("MANAGER")
+
+Restricting Access Based Roles and in particular, we'll modify our code to handle the PATCH requests for Partial Updates
+For Our Example to implement in Spring Security:
+HTTP Method |        Endpoint	          |     CRUD Action	    |   Role   |
+GET	    | /api/employees		  | Read All Employees      | EMPLOYEE |
+GET	    | /api/employees/{employeeId} | Read Single Employee    | EMPLOYEE |
+POST	    | /api/employees		  | Create an Employee      | MANAGER  |
+PUT	    | /api/employees		  | Update an Employee      | MANAGER  |
+DELETE	    | /api/employees/{employeeId} | Delete an Employee      | ADMIN    |
+PATCH       | /api/employees/{employeeId} | Partial Update Employee | MANAGER  |  <--- New HTTP method to support
+
+Spring Boot REST API Security JDBC Authentication(Plain Text) - User Accounts Stored in Database
+- So far, our user accounts were hard coded in Java source code (Did this to keep things simple)
+- Now we want to add database access (Advanced Feature of Spring Security)
+
+Database Support in Spring Security (Out-of-the-box)
+- Spring Security can read user account info from the database
+- By default, you have to follow Spring Security's predefined table schema
+Spring Security + JDBC Code <---> The Backend Database
+
+Customizing Database Access with Spring Security
+- Can customize the table schemas, Useful if you have custom tables specific to your given project
+- The only thing you would be responsible for is developing the code to access the data (JDBC, JPA/Hibernate, etc.)
+
+User Accounts Stored in Database - Development Process
+1. Develop SQL Script to set up database tables
+	- Must use these exact table names "users" & "authorities" & columns: users have username, password, & enabled... authorities have username & authority
+	- Internally Spring Security uses "ROLE_" prefix to specify a role to a user
+2. Add database support to Maven POM file
+3. Create JDBC properties file in the application.properties file
+4. Update Spring Security Configuration to use JDBC

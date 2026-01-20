@@ -1,0 +1,11 @@
+Bean Scopes, A scope refers to the lifecycle of a bean(How long does the bean live?, How many instances are created?, How is the bean shared?).
+The default scope is a "Singleton". A singleton refers to the spring container where it creates only one instance of the bean, by default.
+Singletons are cached in the memory and all dependency injections done for the bean will reference the SAME bean.
+Additional Spring Bean Scopes:
+1. Singleton - Creates a single shared instance of the bean. Default Scope.
+2. Prototype - Creates a new bean instance for each container request.
+3. Request - Scoped to an HTTP web request. Used only for web apps.
+4. Session - Scoped to an HTTP web session. Used only for web apps.
+5. Application - Scoped to a web app ServletContext. Used only for web apps.
+6. Websocket - Scoped to a web socket. Used only for web apps.
+Must use the @Scope Annotation to specify which scope to use when creating instances of beans.

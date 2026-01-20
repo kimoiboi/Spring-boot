@@ -1,0 +1,2 @@
+Component Scanning scans everything in com.luv2code.springcoredemo + any sub-packages (recursively). It will start scanning where the main Spring Boot application class is.
+What about any other packages like com.luv2code.util? You must explicitly list base packages to scan (as seen in SpringcoredemoApplication.java)

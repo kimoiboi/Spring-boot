@@ -38,7 +38,10 @@ public class CruddemoApplication {
 
 	private void deleteStudent(StudentDAO studentDAO) {
 
+		// retrieve student based on the id: primary key
 		int studentId = 3;
+
+		// delete student with id = 3
 		System.out.println("Deleting student id: " + studentId);
 		studentDAO.delete(studentId);
 	}

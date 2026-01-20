@@ -1,13 +1,14 @@
 package com.luv2code.cruddemo;
 
-import com.luv2code.cruddemo.dao.StudentDAO;
-import com.luv2code.cruddemo.entity.Student;
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.List;
+import com.luv2code.cruddemo.dao.StudentDAO;
+import com.luv2code.cruddemo.entity.Student;
 
 @SpringBootApplication
 public class CruddemoApplication {
@@ -40,6 +41,7 @@ public class CruddemoApplication {
 
 	private void deleteAllStudents(StudentDAO studentDAO) {
 
+		// delete all students
 		System.out.println("Deleting all students");
 		int numRowsDeleted = studentDAO.deleteAll();
 		System.out.println("Deleted row count: " + numRowsDeleted);
@@ -47,7 +49,10 @@ public class CruddemoApplication {
 
 	private void deleteStudent(StudentDAO studentDAO) {
 
+		// retrieve student based on the id: primary key
 		int studentId = 3;
+
+		// delete student with id = 3
 		System.out.println("Deleting student id: " + studentId);
 		studentDAO.delete(studentId);
 	}

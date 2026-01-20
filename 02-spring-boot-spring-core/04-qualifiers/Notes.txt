@@ -1,0 +1,2 @@
+The @Qualifier annotation is used to solve ambiguity when multiple beans of the same type exist for dependency injection. It is used in conjunction with @Autowired to specify 
+the exact bean that should be injected by using its unique ID name created for it. (Can be used for both Constructor Injection & Setter Injection)

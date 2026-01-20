@@ -8,7 +8,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 public class DemoSecurityConfig {
-
+    
+    // Since we defined our users here, Spring Boot will NOT use the user/pass from the application.properties file
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
 

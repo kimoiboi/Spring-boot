@@ -1,0 +1,15 @@
+Bean Lifecycle: 
+Container Started -> Bean Instantiated -> Dependencies Injected -> Internal Spring Processing -> Your Custom Init Method -> Bean is ready for use -> Container is shutdown -> Your Custom Destroy Method -> Fully Stops
+Bean Lifecycle Methods/Hooks:
+1. You can add custom code during bean initialization(Calling Custom Business Logic Methods, Setting up Handles to Resources like db, sockets, file, etc)
+2. You can add custom code during bean destruction(Calling Custom Business Logic Methods, Cleaning up Handles to Resources like db, sockets, file, etc)
+The appropriate annotation to use when creating an Init method configuration is @PostConstruct
+The appropriate annotation to use when creating a Destroy method configuration is @PreDestroy
+Step-By-Step Development Process:
+1. Define your methods for init and destroy
+2. Add annotations(@PostConstruct & @PreDestroy)
+Few things about "Prototype" Scope and it's destroy lifecycle:
+For "prototype" scoped beans, Spring does not call the destroy method. Gasp! Compared to the other scopes, Spring does not manage the complete lifecycle of a prototype bean: 
+the container instantiates, configures, and otherwise assembles a prototype object, and hands it to the client, with no further record of that prototype instance.
+Thus, although initialization lifecycle callback methods are called on all objects regardless of scope, in the case of prototypes, configured destruction lifecycle callbacks are not called.
+The client code must clean up prototype-scoped objects and release expensive resources that the prototype bean(s) are holding.
