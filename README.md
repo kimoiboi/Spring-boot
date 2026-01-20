@@ -10,14 +10,14 @@ Happy coding!
 
 &#8287;
 ## Spring Boot Road Map - Learning Path
- [x] Completed Spring Boot Overview
- [x] Completed Spring Boot Core Principles
- [x] Completed Spring Boot JPA/Hibernate using CRUD Operations 
- [X] Completed Spring Boot REST API using CRUD Operations 
- [] Spring Boot REST Security (In progress)
- [] Spring Boot Spring MVC
- [] Spring Boot Spring MVC with CRUD Operations
- [] Spring Boot Spring MVC Security
- [] Spring Boot JPA/Hibernate Advanced Mappings
- [] Spring Boot Aspect-Oriented Programming
+ 1. Completed Spring Boot Overview ✓
+ 2. Completed Spring Boot Core Principles ✓
+ 3. Completed Spring Boot JPA/Hibernate using CRUD Operations ✓
+ 4.  Completed Spring Boot REST API using CRUD Operations ✓
+ 5. Spring Boot REST Security (In progress) 
+ 6. Spring Boot Spring MVC
+ 7. Spring Boot Spring MVC with CRUD Operations
+ 8. Spring Boot Spring MVC Security
+ 9. Spring Boot JPA/Hibernate Advanced Mappings
+ 10. Spring Boot Aspect-Oriented Programming
  
