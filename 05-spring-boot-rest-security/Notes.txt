@@ -137,3 +137,53 @@ User Accounts Stored in Database - Development Process
 2. Add database support to Maven POM file
 3. Create JDBC properties file in the application.properties file
 4. Update Spring Security Configuration to use JDBC
+
+Spring Security Password Encryption
+Password Storage - Best Practice
+- Spring Team recommends to use Spring Security bcrypt in order to store passwords in an encrypted format
+
+Bcrypt Performs:
+- One way encrypted hashing
+- Adds a random salt to the password for additional protection
+- Includes support to defend against brute force attacks
+
+Bcrypt Additional Information & Links
+- Why should you use bcrypt to hash passwords --> Follow this link: www.luv2code.com/why-bcrypt
+- For a detailed bcrypt algorithm analysis --> Follow this link: www.luv2code.com/bcrypt-wiki-page
+- For best practices on password hashing --> Follow this link: www.luv2code.com/password-hashing-best-practices
+
+How to get a Bcrypt password
+Option 1: Use a website utility to perform the encryption
+	1. Visit: www.luv2code.com/generate-bcrypt-password
+	2. Enter the plaintext password
+	3. Then it will generate a bcrypt password for you
+Option 2: Write Java code to perform the encryption
+
+Spring Security Password Encryption - Development Process
+1. Run SQL Script that contains the encrypted passwords
+	- Modify DDL for password field, length should be 68 characters long since {bcrypt} is 8 characters long and the encoded password is 60 characters long
+
+Spring Security Login Process
+REST Client <----- Spring Security Filters -----> Backend Database
+What's happening behind the scenes?
+1. Retrieves password from the Database for the user
+2. Reads the encoding algorithm ID (bcrypt, etc.)
+3. For the case of bcrypt, it encrypts the plaintext password submitted from the login form (Using the salt from the Database password)
+4. Compares the encrypted password from the login form WITH the encrypted password from the Database
+5. If there is a match then the login is successful
+6. If there is no match then the login is not successful
+
+Spring Boot REST API Security - JDBC Authentication with Custom Tables
+- The default Spring Security Database Schema required the exact same table names(users, authorities) & same column names(username, password, enabled, username, authority) to run bcrypt
+- Is there a way to create custom tables and columns, rather than using Springs default schemas? (Answer is ... yes!)
+
+Spring Boot REST API Security (JDBC Authentication with Custom Tables) - Development Process
+1. Create our custom tables with SQL
+2. Update Spring Security Configuration
+	- Provide query to find user by user name
+	- Provide query to find authorities/roles by user name
+
+For Spring Boot REST API Security, how can I add security support using JPA/Hibernate?
+I have a document that covers this. It handles Spring Security using JPA/Hibernate. Demo includes Hibernate, database support, encrypted passwords.
+1. PDF - https://www.luv2code.com/bonus-lecture-spring-boot-rest-security-jpa-hibernate-bcrypt-pdf
+2. Source Code - https://www.luv2code.com/bonus-lecture-spring-boot-rest-security-jpa-hibernate-bcrypt-code

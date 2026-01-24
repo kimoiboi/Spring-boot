@@ -1,0 +1,43 @@
+Spring MVC - Thymeleaf with Spring Boot
+What is Thymeleaf? (URL: www.thymeleaf.org)
+- Thymeleaf is a Java templating engine that is commonly used to generate the HTML views for web apps
+- However it is a general purpose templating engine so it can use Thymeleaf outside of web apps (More on this later) 
+- You can create Java apps with Thymeleaf (No need for Spring, but there is a lot of Synergy between Thymeleaf & Spring Boot)
+
+What is a Thymeleaf template?
+- Can be an HTML page with some Thymeleaf expressions & can include dynamic content from Thymeleaf expressions
+- This allows it to access Java code, Objects, Spring Beans
+
+Where is the Thymeleaf template processed?
+- In a web app, Thymeleaf is processed on the server
+- Results included in HTML returned to browser
+Architecture Process:
+		1			    2(Model)			    3
+Web Browser --------> Spring MVC Controller --------> Thymeleaf template --------> Web Browser
+
+Thymeleaf with Spring Boot - Development Process
+1. Add Thymeleaf to the Maven POM file
+2. Develop Spring MVC Controller
+3. Create the Thymeleaf template
+
+Where to place Thymeleaf template?
+- In Spring Boot, your Thymeleaf template files go in: src/main/resources/templates
+- For Web Apps, Thymeleaf templates have a .html extension
+
+Additional Features of Thymeleaf
+- Looping and Conditionals
+- CSS & JavaScript Integration
+- Template Layouts and Fragments
+- More at www.thymeleaf.org
+
+Working With CSS & Thymeleaf
+To use CSS with Thymeleaf Templates, you have the option of using:
+-  Local CSS files as part of your project (We will cover this)
+- Referencing remote CSS files (We will cover this)
+
+Working With CSS & Thymeleaf - Development Process 
+1. Create CSS file
+2. Reference the CSS file in the Thymeleaf Template 
+3. Apply CSS Style 
+
+Spring Boot will usually look for static resources in the directory: src/main/resources/static (We will create another sub-directory for CSS that stores our CSS in there)
